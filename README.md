@@ -27,10 +27,9 @@
 > 3. 幂等框架异常
 > 直接抛出异常错误
 
-
-  
-  
+### 流程图
 
 
+![image](https://user-images.githubusercontent.com/35193008/112266923-aa582180-8caf-11eb-95c4-b74c64dab454.png)
 
 
