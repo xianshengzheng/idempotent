@@ -10,6 +10,27 @@
 
 同时引入EL表达式，可以指定方法参数某一值作为幂等值。
 
+### 项目结构
+![image](https://user-images.githubusercontent.com/35193008/113846601-39ddf400-97c9-11eb-8f22-83bf8b94897d.png)
+
+1. aspect： AOP环绕通知
+2. config： 配置类
+3. delay： 失败重试延迟队列
+4. executor： 封装执行器
+5. spel： el表达式
+6. storage： 幂等存储类型（目前支持：redis，本地存储）
+
+### 简单使用
+
+只需要在需求保持幂等的方法上加上@Idempotent注解即可
+````
+  @Idempotent(id = "#id")
+  public void testIdempotent(String id){
+      System.out.println(id + "进入幂等拉~~~~~");
+  }
+````
+
+
 ### 扩展策略
 
 1. 存储
@@ -19,13 +40,13 @@
 
 2. 错误策略
 > 1. 业务错误
-> 业务错误目前默认是抛出异常 RejectedException, 后续将由开发人员自己决定是抛出异常还是正常包持幂等。
+> 业务错误目前默认是抛出异常 RejectedException, 后续将由开发人员自己决定是抛出异常还是正常保持幂等。
 > 
 > 2. 机器宕机 
-> 通过两段式设置过期时间来实现
+> 通过两段式设置过期时间来避免机器宕机导致幂等值已存在。
 > 
 > 3. 幂等框架异常
-> 直接抛出异常错误
+> 直接抛出异常错误。
 
 ### 流程图
 
