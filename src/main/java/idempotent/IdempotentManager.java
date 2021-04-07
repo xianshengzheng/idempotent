@@ -10,7 +10,8 @@ import javax.annotation.Resource;
  */
 @Component
 public class IdempotentManager {
-    @Resource(name="redisClusterIdempotenceStorage")
+
+    @Resource(name="localTestIdempotenceStorage")
     private IdempotenceStorage idempotenceStorage;
 
 

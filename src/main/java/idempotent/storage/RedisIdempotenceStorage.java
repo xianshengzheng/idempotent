@@ -13,15 +13,16 @@ import java.util.concurrent.TimeUnit;
  * @author zhenghao
  */
 @Component
-public class RedisClusterIdempotenceStorage implements IdempotenceStorage {
+public class RedisIdempotenceStorage implements IdempotenceStorage {
 
-    @Autowired
+//    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
 
     @Override
     public boolean saveIfAbsent(String idempotenceId, IdempotentInfo idempotentInfo) {
-        Optional<Boolean> optional = Optional.ofNullable(stringRedisTemplate.opsForValue().setIfAbsent(idempotenceId, idempotenceId, idempotentInfo.getMaxExecutionTime(), TimeUnit.SECONDS));
+        Optional<Boolean> optional = Optional.ofNullable(stringRedisTemplate.opsForValue()
+                .setIfAbsent(idempotenceId, idempotenceId, idempotentInfo.getMaxExecutionTime(), TimeUnit.SECONDS));
         return optional.orElse(false);
     }
 
