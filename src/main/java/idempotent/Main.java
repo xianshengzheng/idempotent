@@ -1,17 +1,18 @@
 package idempotent;
 
 
-import idempotent.config.ComponentScanConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import java.util.stream.Stream;
-
-@Component
+@Configuration
+@ComponentScan("idempotent")
+@EnableAspectJAutoProxy
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext(ComponentScanConfiguration.class);
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(Main.class);
         //或者直接扫描com.linkedbear.spring.annotation.c_scan包
         Main main = (Main) ctx.getBean("main");
         main.testIdempotent("aaa");
