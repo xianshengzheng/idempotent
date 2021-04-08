@@ -1,5 +1,6 @@
 package idempotent;
 
+import com.alibaba.fastjson.JSON;
 import idempotent.delay.DelayQueueManager;
 import idempotent.executor.AbstractIdempotentDelayedExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class IdempotentTemplate {
         if (idempotentInfo == null) {
             throw new RuntimeException("幂等信息为空");
         }
-        idempotentManager.prepare(idempotentInfo);
 
+        idempotentManager.prepare(idempotentInfo);
         Object result = null;
         try {
             result = executor.execute();
@@ -37,6 +38,9 @@ public class IdempotentTemplate {
                 DelayQueueManager.offer(executor);
             }
             throw ex;
+        }
+        if (idempotentInfo.isSaveResult()) {
+            idempotentInfo.setResultJson(JSON.toJSONString(result));
         }
         idempotentManager.after(idempotentInfo);
         return result;

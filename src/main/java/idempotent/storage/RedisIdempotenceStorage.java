@@ -22,18 +22,18 @@ public class RedisIdempotenceStorage implements IdempotenceStorage {
     @Override
     public boolean saveIfAbsent(String idempotenceId, IdempotentInfo idempotentInfo) {
         Optional<Boolean> optional = Optional.ofNullable(stringRedisTemplate.opsForValue()
-                .setIfAbsent(idempotenceId, idempotenceId, idempotentInfo.getMaxExecutionTime(), TimeUnit.SECONDS));
+                .setIfAbsent(idempotenceId, idempotentInfo.getResultJson(), idempotentInfo.getMaxExecutionTime(), TimeUnit.SECONDS));
         return optional.orElse(false);
     }
 
     @Override
     public void updateAfter(String idempotenceId, IdempotentInfo idempotentInfo) {
-        stringRedisTemplate.opsForValue().set(idempotenceId, idempotenceId, idempotentInfo.getDuration(), TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(idempotenceId, idempotentInfo.getResultJson(), idempotentInfo.getDuration(), TimeUnit.SECONDS);
     }
 
     @Override
-    public boolean exist(String idempotenceId) {
-        return stringRedisTemplate.opsForValue().get(idempotenceId) != null;
+    public String getResultString(String idempotenceId) {
+        return stringRedisTemplate.opsForValue().get(idempotenceId);
     }
 
     @Override

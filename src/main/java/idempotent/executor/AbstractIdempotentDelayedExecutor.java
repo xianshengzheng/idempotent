@@ -22,6 +22,7 @@ public abstract class AbstractIdempotentDelayedExecutor extends DelayedCountSupp
                 .duration(idempotentAnnotation.duration())
                 .delaySpending(idempotentAnnotation.failureRetry())
                 .delaySpendingMaxCount(idempotentAnnotation.failureRetryMaxCount())
+                .saveResult(idempotentAnnotation.saveResult())
                 .build();
     }
 

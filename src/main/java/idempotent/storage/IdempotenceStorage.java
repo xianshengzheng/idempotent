@@ -17,18 +17,18 @@ public interface IdempotenceStorage {
     boolean saveIfAbsent(String idempotenceId, IdempotentInfo idempotentInfo);
 
     /**
-     * 完成业务代码之后调用
+     * 完成业务代码之后调用, 需要将结果保存下来
      * @param idempotenceId 幂等记录唯一值
      * @param idempotentInfo 幂等信息
      */
     void updateAfter(String idempotenceId, IdempotentInfo idempotentInfo);
 
     /**
-     * key对应的记录是否存在
+     * 查询key对应的value
      * @param idempotenceId 幂等记录唯一值
      * @return
      */
-    boolean exist(String idempotenceId);
+    String getResultString(String idempotenceId);
 
     /**
      * 删除指定idempotenceId的记录

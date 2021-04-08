@@ -1,6 +1,7 @@
 package idempotent.aspect;
 
 
+import com.alibaba.fastjson.JSON;
 import idempotent.Idempotent;
 import idempotent.IdempotentTemplate;
 import idempotent.RejectedException;
@@ -50,9 +51,14 @@ public class IdempotentAspect {
             });
 
         } catch (RejectedException t) {
-            logger.info("拒绝执行方法[{}],幂等操作id[{}]", method.getName(), t.getId());
-            //todo 拒绝后，默认抛出Rejected异常，应该返回上一次成功数据
-            throw t;
+            if (idempotentAnnotation.saveResult()) {
+                logger.info("重复执行方法[{}],幂等操作id[{}]，直接返回结果", method.getName(), t.getId());
+                return JSON.parseObject(t.getResultJson(), method.getReturnType());
+            } else {
+                logger.info("拒绝执行方法[{}],幂等操作id[{}]", method.getName(), t.getId());
+                throw t;
+            }
+
         }
     }
 }

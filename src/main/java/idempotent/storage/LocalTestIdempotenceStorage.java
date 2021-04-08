@@ -20,7 +20,7 @@ public class LocalTestIdempotenceStorage implements IdempotenceStorage {
     public boolean saveIfAbsent(String idempotenceId, IdempotentInfo idempotentInfo) {
         synchronized(this){
             if (!idempotenceIdMap.containsKey(idempotenceId)) {
-                idempotenceIdMap.put(idempotenceId,idempotenceId);
+                idempotenceIdMap.put(idempotenceId,idempotentInfo.getResultJson());
                 return true;
             }
             return false;
@@ -29,12 +29,12 @@ public class LocalTestIdempotenceStorage implements IdempotenceStorage {
 
     @Override
     public void updateAfter(String idempotenceId, IdempotentInfo idempotentInfo) {
-
+        idempotenceIdMap.put(idempotenceId,idempotentInfo.getResultJson());
     }
 
     @Override
-    public boolean exist(String idempotenceId) {
-        return false;
+    public String getResultString(String idempotenceId) {
+        return idempotenceIdMap.get(idempotenceId);
     }
 
     @Override

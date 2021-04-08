@@ -31,6 +31,10 @@ public class IdempotentInfo {
 
     private int delaySpendingMaxCount;
 
+    private String resultJson = "";
+
+    private boolean saveResult;
+
     public static class IdempotentInfoBuilder {
         private String id;
 
@@ -43,6 +47,8 @@ public class IdempotentInfo {
         private boolean delaySpending;
 
         private int delaySpendingMaxCount = FAILURE_RETRY_SPENDING_MAX_COUNT;
+
+        private boolean saveResult;
 
 
         public static IdempotentInfoBuilder builder() {
@@ -79,6 +85,11 @@ public class IdempotentInfo {
             return this;
         }
 
+        public IdempotentInfoBuilder saveResult(boolean saveResult) {
+            this.saveResult = saveResult;
+            return this;
+        }
+
         public IdempotentInfo build() {
             IdempotentInfo idempotentInfo = new IdempotentInfo();
             idempotentInfo.setId(id);
@@ -87,6 +98,7 @@ public class IdempotentInfo {
             idempotentInfo.setPrefix(prefix);
             idempotentInfo.setDelaySpending(delaySpending);
             idempotentInfo.setDelaySpendingMaxCount(delaySpendingMaxCount);
+            idempotentInfo.setSaveResult(saveResult);
             return idempotentInfo;
         }
 
@@ -97,6 +109,7 @@ public class IdempotentInfo {
             idempotentInfo.setDuration(idempotent.duration());
             idempotentInfo.setPrefix(idempotent.prefix());
             idempotentInfo.setDelaySpending(idempotent.failureRetry());
+            idempotentInfo.setSaveResult(idempotent.saveResult());
             return idempotentInfo;
         }
     }
@@ -147,5 +160,21 @@ public class IdempotentInfo {
 
     public void setDelaySpendingMaxCount(int delaySpendingMaxCount) {
         this.delaySpendingMaxCount = delaySpendingMaxCount;
+    }
+
+    public String getResultJson() {
+        return resultJson;
+    }
+
+    public void setResultJson(String resultJson) {
+        this.resultJson = resultJson;
+    }
+
+    public boolean isSaveResult() {
+        return saveResult;
+    }
+
+    public void setSaveResult(boolean saveResult) {
+        this.saveResult = saveResult;
     }
 }

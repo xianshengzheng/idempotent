@@ -11,14 +11,14 @@ import javax.annotation.Resource;
 @Component
 public class IdempotentManager {
 
-    @Resource(name="localTestIdempotenceStorage")
+    @Resource(name = "localTestIdempotenceStorage")
     private IdempotenceStorage idempotenceStorage;
 
 
     public void prepare(IdempotentInfo idempotentInfo) {
         String id = idempotentInfo.getId();
         if (!idempotenceStorage.saveIfAbsent(id, idempotentInfo)){
-            throw new RejectedException(idempotentInfo.getId());
+            throw new RejectedException(id, idempotenceStorage.getResultString(id));
         }
     }
 
@@ -27,10 +27,10 @@ public class IdempotentManager {
     }
 
     public void afterThrowing(IdempotentInfo idempotentInfo, Throwable ex) {
-            idempotenceStorage.delete(idempotentInfo.getId());
+        idempotenceStorage.delete(idempotentInfo.getId());
     }
 
-    void delete(String id){
+    void delete(String id) {
         idempotenceStorage.delete(id);
     }
 }

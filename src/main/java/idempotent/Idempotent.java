@@ -28,6 +28,11 @@ public @interface Idempotent {
     String id();
 
     /**
+     * 是否开启幂等方法结果保存
+     */
+    boolean saveResult() default false;
+
+    /**
      * 幂等操作最大执行时间（秒）
      */
     int maxExecutionTime() default IdempotentInfo.DEFAULT_MAX_EXECUTION_TIME;
