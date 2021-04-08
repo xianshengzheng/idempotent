@@ -11,11 +11,11 @@
 同时引入EL表达式，可以指定方法参数某一值作为幂等值。
 
 ### 项目结构
-![image](https://user-images.githubusercontent.com/35193008/113846601-39ddf400-97c9-11eb-8f22-83bf8b94897d.png)
+![image](https://user-images.githubusercontent.com/35193008/114016329-4cc1f880-989d-11eb-9efc-98041891cb42.png)
 
 1. aspect： AOP环绕通知
-2. config： 配置类
-3. delay： 失败重试延迟队列
+2. businesspolocy： 业务错误策略
+3. config： 配置类
 4. executor： 封装执行器
 5. spel： el表达式
 6. storage： 幂等存储类型（目前支持：redis，本地存储）
