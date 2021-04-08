@@ -1,6 +1,6 @@
 package idempotent;
 
-import idempotent.IdempotentInfo.BusinessErrorPolicyEnum;
+import idempotent.businesspolocy.BusinessErrorPolicyEnum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
