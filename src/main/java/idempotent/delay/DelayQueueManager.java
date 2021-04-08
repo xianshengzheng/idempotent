@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import idempotent.IdempotentTemplate;
 import idempotent.aspect.IdempotentAspect;
 import idempotent.executor.AbstractIdempotentDelayedExecutor;
+import idempotent.executor.DelayedCountSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class DelayQueueManager {
     static Logger logger = LoggerFactory.getLogger(DelayQueueManager.class);
 
-    final DelayQueue<AbstractIdempotentDelayedExecutor> delayQueue = new DelayQueue<>();
+    final DelayQueue<DelayedCountSupport> delayQueue = new DelayQueue<>();
 
     private IdempotentTemplate idempotentTemplate;
 
@@ -41,7 +42,7 @@ public class DelayQueueManager {
         singleThreadPool.execute(() -> {
             while(true) {
                 try {
-                    AbstractIdempotentDelayedExecutor element = delayQueue.poll();
+                    DelayedCountSupport element = delayQueue.poll();
                     if(element != null){
                         idempotentTemplate.execute(element);
                     }
@@ -60,7 +61,7 @@ public class DelayQueueManager {
     }
 
 
-    public void offer(AbstractIdempotentDelayedExecutor delayedExecutor) {
+    public void offer(DelayedCountSupport delayedExecutor) {
         delayQueue.offer(delayedExecutor);
     }
 

@@ -1,5 +1,7 @@
 package idempotent;
 
+import java.util.Optional;
+
 /**
  * 幂等信息
  * @author zhenghao
@@ -17,7 +19,10 @@ public class IdempotentInfo {
 
     public static final String DEFAULT_PREFIX = "idem:";
 
-    public static final int FAILURE_RETRY_SPENDING_MAX_COUNT = 3;
+    /**
+     * 业务错误，默认重试重试次数
+     */
+    public static final int delaySpendingMaxCount = 3;
 
     private String id;
 
@@ -27,13 +32,12 @@ public class IdempotentInfo {
 
     private String prefix;
 
-    private boolean delaySpending;
-
-    private int delaySpendingMaxCount;
-
     private String resultJson = "";
 
     private boolean saveResult;
+
+    private BusinessErrorPolicyEnum businessErrorPolicyEnum;
+
 
     public static class IdempotentInfoBuilder {
         private String id;
@@ -44,11 +48,9 @@ public class IdempotentInfo {
 
         private String prefix = DEFAULT_PREFIX;
 
-        private boolean delaySpending;
-
-        private int delaySpendingMaxCount = FAILURE_RETRY_SPENDING_MAX_COUNT;
-
         private boolean saveResult;
+
+        private BusinessErrorPolicyEnum businessErrorPolicyEnum;
 
 
         public static IdempotentInfoBuilder builder() {
@@ -75,18 +77,13 @@ public class IdempotentInfo {
             return this;
         }
 
-        public IdempotentInfoBuilder delaySpending(boolean delaySpending) {
-            this.delaySpending = delaySpending;
-            return this;
-        }
-
-        public IdempotentInfoBuilder delaySpendingMaxCount(int delaySpendingMaxCount) {
-            this.delaySpendingMaxCount = delaySpendingMaxCount;
-            return this;
-        }
-
         public IdempotentInfoBuilder saveResult(boolean saveResult) {
             this.saveResult = saveResult;
+            return this;
+        }
+
+        public IdempotentInfoBuilder businessErrorPolicyEnum(BusinessErrorPolicyEnum businessErrorPolicyEnum) {
+            this.businessErrorPolicyEnum = businessErrorPolicyEnum;
             return this;
         }
 
@@ -96,21 +93,34 @@ public class IdempotentInfo {
             idempotentInfo.setMaxExecutionTime(maxExecutionTime);
             idempotentInfo.setDuration(duration);
             idempotentInfo.setPrefix(prefix);
-            idempotentInfo.setDelaySpending(delaySpending);
-            idempotentInfo.setDelaySpendingMaxCount(delaySpendingMaxCount);
+            idempotentInfo.setBusinessErrorPolicyEnum(businessErrorPolicyEnum);
             idempotentInfo.setSaveResult(saveResult);
             return idempotentInfo;
         }
+    }
 
-        public static IdempotentInfo build(Idempotent idempotent, String id) {
-            IdempotentInfo idempotentInfo = new IdempotentInfo();
-            idempotentInfo.setId(id);
-            idempotentInfo.setMaxExecutionTime(idempotent.maxExecutionTime());
-            idempotentInfo.setDuration(idempotent.duration());
-            idempotentInfo.setPrefix(idempotent.prefix());
-            idempotentInfo.setDelaySpending(idempotent.failureRetry());
-            idempotentInfo.setSaveResult(idempotent.saveResult());
-            return idempotentInfo;
+    public enum BusinessErrorPolicyEnum{
+        /**
+         * 删除幂等值
+         */
+        delete(1),
+        /**
+         * 保留幂等值
+         */
+        save(2),
+        /**
+         * 删除幂等值并重试
+         */
+        delete_and_retry(3),
+        ;
+        private final Integer code;
+
+        BusinessErrorPolicyEnum(Integer code) {
+            this.code = code;
+        }
+
+        public Integer getCode() {
+            return code;
         }
     }
 
@@ -146,20 +156,8 @@ public class IdempotentInfo {
         this.prefix = prefix;
     }
 
-    public boolean isDelaySpending() {
-        return delaySpending;
-    }
-
-    public void setDelaySpending(boolean delaySpending) {
-        this.delaySpending = delaySpending;
-    }
-
     public int geDelaySpendingMaxCount() {
         return delaySpendingMaxCount;
-    }
-
-    public void setDelaySpendingMaxCount(int delaySpendingMaxCount) {
-        this.delaySpendingMaxCount = delaySpendingMaxCount;
     }
 
     public String getResultJson() {
@@ -176,5 +174,13 @@ public class IdempotentInfo {
 
     public void setSaveResult(boolean saveResult) {
         this.saveResult = saveResult;
+    }
+
+    public BusinessErrorPolicyEnum getBusinessErrorPolicyEnum() {
+        return businessErrorPolicyEnum;
+    }
+
+    public void setBusinessErrorPolicyEnum(BusinessErrorPolicyEnum businessErrorPolicyEnum) {
+        this.businessErrorPolicyEnum = businessErrorPolicyEnum;
     }
 }

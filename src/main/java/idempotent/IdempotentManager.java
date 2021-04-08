@@ -26,11 +26,7 @@ public class IdempotentManager {
         idempotenceStorage.updateAfter(idempotentInfo.getId(), idempotentInfo);
     }
 
-    public void afterThrowing(IdempotentInfo idempotentInfo, Throwable ex) {
+    public void delete(IdempotentInfo idempotentInfo) {
         idempotenceStorage.delete(idempotentInfo.getId());
-    }
-
-    void delete(String id) {
-        idempotenceStorage.delete(id);
     }
 }

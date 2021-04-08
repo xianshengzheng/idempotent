@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhenghao
  */
-public abstract class DelayedCountSupport implements Delayed {
+public abstract class DelayedCountSupport implements IdempotentExecutor {
     /**
      * 延迟时间（秒）
      */

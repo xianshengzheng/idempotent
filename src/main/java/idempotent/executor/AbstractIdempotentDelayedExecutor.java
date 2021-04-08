@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 /**
  * @author zhenghao
  */
-public abstract class AbstractIdempotentDelayedExecutor extends DelayedCountSupport implements IdempotentExecutor {
+public abstract class AbstractIdempotentDelayedExecutor extends DelayedCountSupport{
 
     private IdempotentInfo idempotentInfo;
 
@@ -20,8 +20,7 @@ public abstract class AbstractIdempotentDelayedExecutor extends DelayedCountSupp
                 .id(idempotentAnnotation.prefix().concat(AspectSupportUtils.parseExpression(idempotentAnnotation.id(),method,args)))
                 .maxExecutionTime(idempotentAnnotation.maxExecutionTime())
                 .duration(idempotentAnnotation.duration())
-                .delaySpending(idempotentAnnotation.failureRetry())
-                .delaySpendingMaxCount(idempotentAnnotation.failureRetryMaxCount())
+                .businessErrorPolicyEnum(idempotentAnnotation.businessErrorPolicyEnum())
                 .saveResult(idempotentAnnotation.saveResult())
                 .build();
     }

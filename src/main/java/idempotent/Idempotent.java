@@ -1,5 +1,7 @@
 package idempotent;
 
+import idempotent.IdempotentInfo.BusinessErrorPolicyEnum;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,9 +10,9 @@ import java.lang.annotation.Target;
 /**
  * 幂等接口:
  * 1. id支持EL表达式，根据prefix+id作为幂等值，其中prefix非必传，可用于区分不同的业务。
- * 2. 支持最大重试次数的延迟队列，默认关闭
- * 3. 当重复调用的时候，目前无法返回上一次成功数据。而是直接抛出{@code RejectedException}.
- * 4. 支持使用不同的数据源实现，目前只实现了redis
+ * 2. 当发生业务方法错误的时候，提供三种策略，第一种是直接删除幂等值。第二种是保留幂等值。第三种是删除幂等值并重试一定次数
+ * 3. 当重复调用的时候，提供两种策略，第一种是直接抛出{@code RejectedException}。第二种是放回上一次执行结果
+ * 4. 支持使用不同的数据源实现，目前只实现了redis和本地内存
  * @author zhenghao
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -43,12 +45,7 @@ public @interface Idempotent {
     int duration() default IdempotentInfo.DEFAULT_DURATION;
 
     /**
-     * 是否开启失败重试
+     * 业务错误策略(由开发者根据自己业务判断)
      */
-    boolean failureRetry() default false;
-
-    /**
-     * 失败重试最大次数
-     */
-    int failureRetryMaxCount() default IdempotentInfo.FAILURE_RETRY_SPENDING_MAX_COUNT;
+    BusinessErrorPolicyEnum businessErrorPolicyEnum() default BusinessErrorPolicyEnum.delete;
 }
