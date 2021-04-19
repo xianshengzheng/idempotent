@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import idempotent.Idempotent;
 import idempotent.IdempotentTemplate;
 import idempotent.RejectedException;
+import idempotent.businesspolocy.BusinessErrorPolicyEnum;
 import idempotent.executor.AbstractIdempotentDelayedExecutor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -51,7 +52,8 @@ public class IdempotentAspect {
             });
 
         } catch (RejectedException t) {
-            if (idempotentAnnotation.saveResult()) {
+            if (idempotentAnnotation.saveResult()
+                    && idempotentAnnotation.businessErrorPolicyEnum() != BusinessErrorPolicyEnum.save) {
                 logger.info("重复执行方法[{}],幂等操作id[{}]，直接返回结果", method.getName(), t.getId());
                 return JSON.parseObject(t.getResultJson(), method.getReturnType());
             } else {
